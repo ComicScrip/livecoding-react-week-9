@@ -1,11 +1,11 @@
-import React from 'react'
+import React from 'react';
 
-const ErrorBox = ({message}) => {
+const ErrorBox = ({ message }) => {
   return (
     <div className='error-box'>
       {message}
     </div>
-  )
-}
+  );
+};
 
-export default ErrorBox
+export default ErrorBox;

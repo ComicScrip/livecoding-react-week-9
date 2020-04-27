@@ -1,11 +1,11 @@
 import React from 'react';
-import {withStudents} from '../data/students';
-import LoadingIndicator from './LoadingIndicator'
-import ErrorBox from './ErrorBox'
+import { withStudents } from '../data/students';
+import LoadingIndicator from './LoadingIndicator';
+import ErrorBox from './ErrorBox';
 
-function StudentDetailsPage({ match: { params: { githubAccountName } } , studentList, loadingStudents, fetchStudentsError}) {
-  if (loadingStudents) return <LoadingIndicator/>
-  if (fetchStudentsError) return <ErrorBox message={fetchStudentsError} />
+function StudentDetailsPage ({ match: { params: { githubAccountName } }, studentList, loadingStudents, fetchStudentsError }) {
+  if (loadingStudents) return <LoadingIndicator />;
+  if (fetchStudentsError) return <ErrorBox message={fetchStudentsError} />;
 
   const student = studentList.find(s => s.githubUserName === githubAccountName);
   if (!student) return <p>Aucun élève avec le compte GH "{githubAccountName}"...</p>;

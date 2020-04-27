@@ -1,5 +1,5 @@
-import React from 'react'
-import axios from 'axios'
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 class Student {
   constructor (props) {
@@ -29,40 +29,29 @@ class Student {
 }
 
 export const withStudents = WrappedComponent => {
-  return class extends React.Component {
-    constructor(props) {
-      super(props);
-      this.state = {
-        loadingStudents: false,
-        studentList: [],
-        fetchStudentsError: null
-      };
-    }
-
-    componentDidMount() {
-      this.fetchStudentList()
-    }
-
-    fetchStudentList = () => {
-      this.setState({ loadingStudents: true, fetchStudentsError: null });
+  return (props) => {
+    const [loadingStudents, setLoadingStudents] = useState(false);
+    const [studentList, setStudentList] = useState([]);
+    const [fetchStudentsError, setFetchStudentsError] = useState(null);
+    const fetchStudentList = () => {
+      setLoadingStudents(true);
+      setFetchStudentsError(null);
       Student.loadAll()
         .then(studentList => {
-          this.setState({ studentList, loadingStudents: false, fetchStudentsError: null});
+          setStudentList(studentList);
+          setFetchStudentsError(null);
         }).catch(error => {
           console.error(error);
-          this.setState({
-            loadingStudents: false,
-            fetchStudentsError: 'Une erreur est survenue lors du chargement de la liste des élèves'
-          });
-      });
-    }
+          setFetchStudentsError('Une erreur est survenue lors du chargement de la liste des élèves');
+        }).finally(() => setLoadingStudents(false));
+    };
 
-    render () {
-      return (
-        <WrappedComponent {...{...this.state, ...this.props}} />
-      )
-    }
-  }
-}
+    useEffect(fetchStudentList, []);
+
+    return (
+      <WrappedComponent {...{ ...{ loadingStudents, studentList, fetchStudentsError }, ...props }} />
+    );
+  };
+};
 
 export default Student;

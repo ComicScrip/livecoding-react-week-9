@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { sortBy } from 'lodash';
 
@@ -27,64 +27,49 @@ const SortButton = ({ fieldToSortBy, sortOrder, activeSort, onClick }) => {
   );
 };
 
-class StudentsTable extends React.Component {
-  constructor (props) {
-    super(props);
-    this.state = {
-      activeSort: null,
-      sortedStudents: props.students
-    };
-    this.handleSortButtonClicked = this.handleSortButtonClicked.bind(this);
-  }
+function StudentsTable (props) {
+  const [activeSort, setActiveSort] = useState(null);
+  const [sortedStudents, setSortedStudents] = useState(props.students);
 
-  handleSortButtonClicked (fieldToSortByWithOrder) {
-    if (this.state.activeSort === fieldToSortByWithOrder) {
-      this.setState({ sortedStudents: this.props.students, activeSort: null });
+  const handleSortButtonClicked = (fieldToSortByWithOrder) => {
+    if (activeSort === fieldToSortByWithOrder) {
+      setSortedStudents(props.students);
+      setActiveSort(null);
     } else {
       const [fieldToSortBy, sortOrder] = fieldToSortByWithOrder.split(' ');
-      let sortedStudents = sortBy(this.props.students, fieldToSortBy);
+      let sortedStudents = sortBy(props.students, fieldToSortBy);
       if (sortOrder === 'DESC') {
         sortedStudents = sortedStudents.reverse();
       }
-      this.setState({ sortedStudents, activeSort: fieldToSortByWithOrder });
+      setActiveSort(fieldToSortByWithOrder);
+      setSortedStudents(sortedStudents);
     }
-  }
+  };
 
-  static getDerivedPropsFromState(props, state) {
-    return {
-      ...state,
-      sortedStudents: props.students
-    }
-  }
-
-  render () {
-    const { sortedStudents, activeSort } = this.state;
-
-    return (
-      <table>
-        <thead>
+  return (
+    <table>
+      <thead>
         <tr>
           <td>Prénom
             <span className='col-sort-buttons-container'>
-                <SortButton fieldToSortBy='firstName' sortOrder='ASC' onClick={this.handleSortButtonClicked} activeSort={activeSort} />
-                <SortButton fieldToSortBy='firstName' sortOrder='DESC' onClick={this.handleSortButtonClicked} activeSort={activeSort} />
-              </span>
+              <SortButton fieldToSortBy='firstName' sortOrder='ASC' onClick={handleSortButtonClicked} activeSort={activeSort} />
+              <SortButton fieldToSortBy='firstName' sortOrder='DESC' onClick={handleSortButtonClicked} activeSort={activeSort} />
+            </span>
           </td>
           <td>Nom
             <span className='col-sort-buttons-container'>
-                <SortButton fieldToSortBy='lastName' sortOrder='ASC' onClick={this.handleSortButtonClicked} activeSort={activeSort} />
-                <SortButton fieldToSortBy='lastName' sortOrder='DESC' onClick={this.handleSortButtonClicked} activeSort={activeSort} />
-              </span>
+              <SortButton fieldToSortBy='lastName' sortOrder='ASC' onClick={handleSortButtonClicked} activeSort={activeSort} />
+              <SortButton fieldToSortBy='lastName' sortOrder='DESC' onClick={handleSortButtonClicked} activeSort={activeSort} />
+            </span>
           </td>
           <td>P1bis présenté</td>
         </tr>
-        </thead>
-        <tbody>
+      </thead>
+      <tbody>
         {sortedStudents.map(StudentsTableRow)}
-        </tbody>
-      </table>
-    );
-  }
+      </tbody>
+    </table>
+  );
 }
 
 export default StudentsTable;

@@ -1,5 +1,5 @@
 const express = require('express');
-const cors = require('cors')
+const cors = require('cors');
 const app = express();
 const port = 3000;
 
@@ -142,7 +142,7 @@ const studentsRawData = [
 app.use(cors());
 
 app.get('/students', (req, res) => {
-  res.header('')
+  res.header('');
   setTimeout(() => {
     res.json(studentsRawData);
     // res.sendStatus(500);
